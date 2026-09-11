@@ -1,0 +1,48 @@
+REAL-TIME IDS — HOW TO RUN
+==========================
+
+Use the Anaconda Python (it has streamlit, torch, scapy, plotly, sklearn):
+
+    /opt/anaconda3/bin/python
+
+--------------------------------------------------------------------------
+1) QUICKEST — DEMO MODE (no root, no extra terminals)
+--------------------------------------------------------------------------
+    cd "Dashboard"
+    /opt/anaconda3/bin/python -m streamlit run dashboard.py
+
+The dashboard auto-starts the built-in Scenario demo and loops:
+    Normal 8s -> ⚠️ DoS 12s -> Normal 8s -> 🚨 DDoS 12s -> Normal 8s
+Watch the status pill, alerts feed, coloured bands on the traffic chart
+and the LSTM confidence panel update live every second.
+
+--------------------------------------------------------------------------
+2) TESTS (verify the engine + UI yourself)
+--------------------------------------------------------------------------
+    cd "Dashboard"
+    /opt/anaconda3/bin/python selftest.py     # full detection lifecycle
+    /opt/anaconda3/bin/python ui_test.py      # headless dashboard UI test
+
+--------------------------------------------------------------------------
+3) LIVE DEMO — attack a real local web server (macOS needs sudo ONLY
+   because packet capture requires root; Windows/Npcap usually does not)
+--------------------------------------------------------------------------
+Terminal A — dashboard with live capture:
+    cd "Dashboard"
+    sudo /opt/anaconda3/bin/python -m streamlit run dashboard.py
+    then in the sidebar choose:  Traffic source = "Live capture",
+    Apply source.  (Interface auto-detects; filter host = 127.0.0.1)
+
+Terminal B — the target web server:
+    /opt/anaconda3/bin/python -m http.server 8000 --bind 127.0.0.1
+
+Terminal C — launch attacks (paced, ML-friendly payload sizes):
+    /opt/anaconda3/bin/python dos_generator.py --mode dos  --pps 130 \
+        --payload 1000 --duration 15
+    /opt/anaconda3/bin/python dos_generator.py --mode ddos --pps 80 \
+        --sources 8 --payload 1000 --duration 15
+
+--------------------------------------------------------------------------
+ARCHITECTURE / WHY IT CHANGED
+--------------------------------------------------------------------------
+See Dashboard/README.md (full walkthrough, model notes, tuning, FAQ).

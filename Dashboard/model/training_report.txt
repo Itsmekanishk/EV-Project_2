@@ -1,0 +1,32 @@
+Leak-free LSTM report - phase1_ev_attack_dataset.csv
+============================================================
+train windows: 6120   test windows: 2600
+
+classification_report (test):
+              precision    recall  f1-score   support
+
+      Normal      1.000     1.000     1.000      1190
+         DoS      1.000     0.993     0.997       290
+        DDoS      0.998     1.000     0.999       890
+   Malformed      1.000     1.000     1.000       230
+
+    accuracy                          0.999      2600
+   macro avg      0.999     0.998     0.999      2600
+weighted avg      0.999     0.999     0.999      2600
+
+confusion matrix (rows=actual, cols=predicted):
+               Normal      DoS     DDoSMalformed
+   Normal:      1190        0        0        0
+      DoS:         0      288        2        0
+     DDoS:         0        0      890        0
+Malformed:         0        0        0      230
+
+runtime emulation: homogeneous windows at each class centre
+     Normal centre ->    Normal  conf=1.00  probs=[1. 0. 0. 0.]
+        DoS centre ->       DoS  conf=1.00  probs=[0.    0.998 0.001 0.   ]
+       DDoS centre ->      DDoS  conf=1.00  probs=[0. 0. 1. 0.]
+  Malformed centre -> Malformed  conf=1.00  probs=[0.001 0.    0.001 0.998]
+
+boundary probe: window = 3 normal + 7 attack rows
+  ->    DoS last rows -> Malformed  conf=1.00
+  ->   DDoS last rows -> Malformed  conf=1.00

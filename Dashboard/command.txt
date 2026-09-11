@@ -1,0 +1,18 @@
+Full instructions live in README.md (same folder).
+
+Short version (Windows, from this Dashboard folder):
+
+  # demo mode (no root) - opens the dashboard
+  streamlit run dashboard.py
+
+  # live capture mode (Windows/Npcap usually works without admin)
+  streamlit run dashboard.py          # sidebar -> Live capture -> Apply
+
+  # victim server + attacker in two more terminals
+  python -m http.server 8000 --bind 127.0.0.1
+  python dos_generator.py --mode dos --pps 130 --payload 1000 --duration 15
+  python dos_generator.py --mode ddos --pps 80 --sources 8 --payload 1000 --duration 15
+
+Note: use the Python environment that has streamlit + torch + scapy + plotly
+installed (e.g. Anaconda). For Windows live capture, sniffing usually needs
+Npcap/WinPcap installed.

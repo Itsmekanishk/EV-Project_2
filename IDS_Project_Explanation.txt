@@ -1,0 +1,185 @@
+REAL-TIME INTRUSION DETECTION SYSTEM (IDS)
+=================================================
+
+1. PROJECT OVERVIEW
+-------------------
+This project implements a Real-Time Intrusion Detection System (IDS) using Machine Learning and network traffic analysis. 
+The system detects Denial of Service (DoS) and Distributed Denial of Service (DDoS) attacks from live network traffic.
+
+Goal:
+To monitor network traffic continuously and identify abnormal patterns that indicate potential cyber-attacks.
+
+-------------------------------------------------
+
+2. SYSTEM PIPELINE
+------------------
+Network Traffic → Feature Extraction → LSTM Model → Detection Logic → Dashboard
+
+-------------------------------------------------
+
+3. TRAFFIC CAPTURE
+------------------
+The system captures real-time packets using Scapy.
+
+Each packet contains:
+- Source IP
+- Destination IP
+- Protocol (TCP/UDP)
+- Port
+- Packet size
+- Timestamp
+
+-------------------------------------------------
+
+4. FEATURE EXTRACTION
+---------------------
+From each packet, the following features are computed:
+
+- Request Rate (packets per second)
+- Packet Size
+- Time Gap between packets
+- Protocol (TCP = 1, UDP = 2)
+- Destination Port
+
+These features convert raw network packets into structured data suitable for machine learning.
+
+-------------------------------------------------
+
+5. SEQUENCE GENERATION
+----------------------
+Instead of analyzing single packets, the system uses a sliding window of 10 packets.
+
+Reason:
+Attacks are patterns over time, not individual packets.
+
+-------------------------------------------------
+
+6. MACHINE LEARNING MODEL
+-------------------------
+Model Used: LSTM (Long Short-Term Memory)
+
+Why LSTM?
+- Captures temporal dependencies
+- Learns sequential behavior of network traffic
+- Detects anomalies over time
+
+Output Classes:
+- Normal
+- DoS
+- DDoS
+
+-------------------------------------------------
+
+7. HYBRID DETECTION LOGIC
+-------------------------
+The system combines Machine Learning with rule-based detection.
+
+Step 1: ML Prediction
+The LSTM model predicts whether traffic is normal or anomalous.
+
+Step 2: Threshold-Based Detection
+If request_rate exceeds a defined threshold, traffic is flagged as an attack.
+
+Step 3: Stability Check
+The system confirms attack only after multiple consecutive detections to reduce false positives.
+
+Step 4: IP-Based Classification
+- If unique IPs ≤ 2 → DoS
+- If unique IPs > 2 → DDoS
+
+Final Decision:
+Detection = ML + Request Rate
+Classification = IP Count
+
+-------------------------------------------------
+
+8. ATTACK STATES
+----------------
+Attack Start:
+Triggered when abnormal traffic persists.
+
+Attack End:
+Triggered when traffic returns to normal for a sustained period.
+
+-------------------------------------------------
+
+9. DASHBOARD
+------------
+Built using Streamlit.
+
+Displays:
+- Packet Rate Graph
+- Unique IP Count Graph
+- Alerts Panel
+- Current Traffic Status
+
+Purpose:
+Provides real-time visualization of network activity and detected attacks.
+
+-------------------------------------------------
+
+10. REAL-TIME FLOW
+------------------
+1. Packet captured using Scapy
+2. Features extracted
+3. Added to sequence window
+4. LSTM model predicts
+5. Detection logic applied
+6. Attack classified (DoS/DDoS)
+7. Alert generated
+8. Dashboard updated
+
+-------------------------------------------------
+
+11. DETECTION CONDITIONS
+------------------------
+
+Normal Traffic:
+- Low or moderate request rate
+- High diversity in packets
+- Irregular patterns
+
+DoS Attack:
+- High request rate
+- Low time gap
+- Repetitive pattern
+- Few IP sources (≤ 2)
+
+DDoS Attack:
+- High request rate
+- Multiple IP sources (> 2)
+- Distributed traffic pattern
+
+-------------------------------------------------
+
+12. KEY FEATURES OF PROJECT
+---------------------------
+- Real-time traffic monitoring
+- Machine learning-based detection
+- Hybrid detection approach
+- DoS vs DDoS classification
+- IP-based analysis
+- Live dashboard visualization
+
+-------------------------------------------------
+
+13. LIMITATIONS
+---------------
+- Traffic generation limited by system hardware
+- Model trained on dataset may not fully match real-world traffic
+- Threshold tuning required for different environments
+
+-------------------------------------------------
+
+14. CONCLUSION
+--------------
+This project demonstrates a complete end-to-end Intrusion Detection System capable of detecting and classifying network attacks in real time. 
+The hybrid approach improves reliability and makes the system suitable for practical deployment.
+
+-------------------------------------------------
+
+15. FINAL ARCHITECTURE
+----------------------
+Scapy → Feature Extraction → LSTM → Hybrid Detection → Alerts → Streamlit Dashboard
+
+-------------------------------------------------
